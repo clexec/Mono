@@ -1,6 +1,6 @@
 import Foundation
 
-struct Track: Identifiable, Codable, Hashable {
+nonisolated struct Track: Identifiable, Codable, Hashable {
     let id: Int
     let title: String
     let artistName: String
@@ -16,7 +16,7 @@ struct Track: Identifiable, Codable, Hashable {
     }
 }
 
-struct ITunesTrackDTO: Decodable {
+nonisolated struct ITunesTrackDTO: Decodable {
     let trackId: Int?
     let trackName: String?
     let artistName: String?
@@ -36,6 +36,6 @@ struct ITunesTrackDTO: Decodable {
     }
 }
 
-struct ITunesSearchResponse: Decodable {
+nonisolated struct ITunesSearchResponse: Decodable {
     let results: [ITunesTrackDTO]
 }

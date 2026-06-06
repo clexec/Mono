@@ -4,7 +4,7 @@ extension View {
     func thereCard() -> some View {
         self
             .padding(14)
-            .modifier(LiquidGlassCardModifier())
+            .glassEffect(in: .rect(cornerRadius: UIConstants.cardRadius))
             .overlay(
                 RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous)
                     .stroke(Color.white.opacity(0.08), lineWidth: 1)
@@ -19,18 +19,9 @@ extension View {
             .foregroundStyle(.black)
     }
 
-    /// Applies Liquid Glass on iOS 26+, falls back to .ultraThinMaterial on older iOS
-    @ViewBuilder
+    /// Applies Liquid Glass effect with the specified corner radius
     func liquidGlassBackground(cornerRadius: CGFloat) -> some View {
-        #if compiler(>=6.2)
-        if #available(iOS 26, *) {
-            self.glassEffect(in: .rect(cornerRadius: cornerRadius))
-        } else {
-            self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        }
-        #else
-        self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        #endif
+        self.glassEffect(in: .rect(cornerRadius: cornerRadius))
     }
 }
 
@@ -40,17 +31,17 @@ extension Date {
     }
 }
 
-// Liquid Glass card modifier with fallback for older iOS / older Xcode
+// Liquid Glass card modifier
 struct LiquidGlassCardModifier: ViewModifier {
     func body(content: Content) -> some View {
-        content.liquidGlassBackground(cornerRadius: UIConstants.cardRadius)
+        content.glassEffect(in: .rect(cornerRadius: UIConstants.cardRadius))
     }
 }
 
-// Liquid Glass background modifier with fallback
+// Liquid Glass background modifier
 struct LiquidGlassBackgroundModifier: ViewModifier {
     let cornerRadius: CGFloat
     func body(content: Content) -> some View {
-        content.liquidGlassBackground(cornerRadius: cornerRadius)
+        content.glassEffect(in: .rect(cornerRadius: cornerRadius))
     }
 }

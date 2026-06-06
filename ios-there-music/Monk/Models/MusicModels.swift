@@ -1,6 +1,6 @@
 import Foundation
 
-struct Album: Identifiable, Codable, Hashable {
+nonisolated struct Album: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let artistName: String
@@ -9,7 +9,7 @@ struct Album: Identifiable, Codable, Hashable {
     let tracks: [Track]
 }
 
-struct Artist: Identifiable, Codable, Hashable {
+nonisolated struct Artist: Identifiable, Codable, Hashable {
     let id: String
     let name: String
     let imageURL: URL?
@@ -17,7 +17,7 @@ struct Artist: Identifiable, Codable, Hashable {
     let topTracks: [Track]
 }
 
-struct Playlist: Identifiable, Codable, Hashable {
+nonisolated struct Playlist: Identifiable, Codable, Hashable {
     let id: String
     var title: String
     var subtitle: String
@@ -26,7 +26,7 @@ struct Playlist: Identifiable, Codable, Hashable {
     var createdAt: Date
 }
 
-struct Comment: Identifiable, Codable, Hashable {
+nonisolated struct Comment: Identifiable, Codable, Hashable {
     let id: String
     let trackID: Int
     let userID: String
@@ -35,27 +35,27 @@ struct Comment: Identifiable, Codable, Hashable {
     let createdAt: Date
 }
 
-struct Genre: Identifiable, Codable, Hashable {
+nonisolated struct Genre: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let symbolName: String
     let query: String
 }
 
-struct Recommendation: Identifiable, Codable, Hashable {
+nonisolated struct Recommendation: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let reason: String
     let tracks: [Track]
 }
 
-enum RepeatMode: String, Codable, CaseIterable {
+nonisolated enum RepeatMode: String, Codable, CaseIterable {
     case off
     case one
     case all
 }
 
-enum LibraryFilter: String, CaseIterable, Identifiable {
+nonisolated enum LibraryFilter: String, CaseIterable, Identifiable {
     case playlists = "Playlists"
     case albums = "Albums"
     case artists = "Artists"
@@ -63,7 +63,7 @@ enum LibraryFilter: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-enum SortOption: String, CaseIterable, Identifiable {
+nonisolated enum SortOption: String, CaseIterable, Identifiable {
     case recentlyAdded = "Recently Added"
     case title = "Title"
     case artist = "Artist"

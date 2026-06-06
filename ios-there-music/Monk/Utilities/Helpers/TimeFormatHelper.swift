@@ -1,25 +1,25 @@
 import Foundation
 
-enum TimeFormatHelper {
+nonisolated enum TimeFormatHelper {
     static func format(milliseconds: Int) -> String {
         let seconds = max(0, milliseconds / 1000)
         return String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
 }
 
-enum ValidationHelper {
+nonisolated enum ValidationHelper {
     static func isValidEmail(_ email: String) -> Bool {
         email.range(of: #"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$"#, options: [.regularExpression, .caseInsensitive]) != nil
     }
 }
 
-enum PasswordStrength: String {
+nonisolated enum PasswordStrength: String {
     case weak = "Weak"
     case medium = "Medium"
     case strong = "Strong"
 }
 
-enum PasswordValidationHelper {
+nonisolated enum PasswordValidationHelper {
     static func strength(for password: String) -> PasswordStrength {
         let hasLetter = password.range(of: #"[A-Za-z]"#, options: .regularExpression) != nil
         let hasNumber = password.range(of: #"\d"#, options: .regularExpression) != nil

@@ -1,12 +1,12 @@
 import SwiftUI
 
-enum AppConstants {
+nonisolated enum AppConstants {
     static let appName = "THERE Music"
     static let appDescription = "Music that feels close. Discover, play, save, and share the tracks that move with you."
     static let googleClientID = ""
 }
 
-enum ColorPalette {
+nonisolated enum ColorPalette {
     static let background = Color.black
     static let surface = Color(red: 0.06, green: 0.05, blue: 0.04)
     static let elevated = Color(red: 0.12, green: 0.09, blue: 0.07)
@@ -16,7 +16,7 @@ enum ColorPalette {
     static let textSecondary = Color(red: 0.702, green: 0.702, blue: 0.702)
 }
 
-enum UIConstants {
+nonisolated enum UIConstants {
     static let horizontalPadding: CGFloat = 16
     static let cornerRadius: CGFloat = 18
     static let cardRadius: CGFloat = 14

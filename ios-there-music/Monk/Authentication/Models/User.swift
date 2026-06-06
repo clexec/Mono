@@ -1,13 +1,13 @@
 
 import Foundation
 
-enum AuthProvider: String, Codable, CaseIterable {
+nonisolated enum AuthProvider: String, Codable, CaseIterable {
     case apple
     case google
     case email
 }
 
-struct User: Identifiable, Codable, Hashable {
+nonisolated struct User: Identifiable, Codable, Hashable {
     let id: String
     var email: String
     var displayName: String
@@ -16,12 +16,12 @@ struct User: Identifiable, Codable, Hashable {
     let provider: AuthProvider
 }
 
-struct AuthCredentials: Codable, Hashable {
+nonisolated struct AuthCredentials: Codable, Hashable {
     let email: String
     let password: String
 }
 
-enum AuthError: LocalizedError, Equatable {
+nonisolated enum AuthError: LocalizedError, Equatable {
     case invalidEmail
     case weakPassword
     case passwordMismatch

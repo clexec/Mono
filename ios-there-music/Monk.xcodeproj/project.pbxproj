@@ -170,18 +170,18 @@
                         isa = PBXProject;
                         attributes = {
                                 BuildIndependentTargetsInParallel = 1;
-                                LastSwiftUpdateCheck = 1600;
-                                LastUpgradeCheck = 1600;
+                                LastSwiftUpdateCheck = 2600;
+                                LastUpgradeCheck = 2600;
                                 TargetAttributes = {
                                         105FC5792E9EAD3100EA8BCF = {
-                                                CreatedOnToolsVersion = 16.0;
+                                                CreatedOnToolsVersion = 26.0;
                                         };
                                         105FC5882E9EAD3200EA8BCF = {
-                                                CreatedOnToolsVersion = 16.0;
+                                                CreatedOnToolsVersion = 26.0;
                                                 TestTargetID = 105FC5792E9EAD3100EA8BCF;
                                         };
                                         105FC5922E9EAD3200EA8BCF = {
-                                                CreatedOnToolsVersion = 16.0;
+                                                CreatedOnToolsVersion = 26.0;
                                                 TestTargetID = 105FC5792E9EAD3100EA8BCF;
                                         };
                                 };
@@ -415,7 +415,10 @@
                                 PRODUCT_BUNDLE_IDENTIFIER = app.mono.io;
                                 PRODUCT_NAME = "$(TARGET_NAME)";
                                 STRING_CATALOG_GENERATE_SYMBOLS = YES;
+                                SWIFT_APPROACHABLE_CONCURRENCY = YES;
+                                SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
                                 SWIFT_EMIT_LOC_STRINGS = YES;
+                                SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
                                 SWIFT_VERSION = 5.0;
                                 TARGETED_DEVICE_FAMILY = "1,2";
                         };
@@ -445,7 +448,10 @@
                                 PRODUCT_BUNDLE_IDENTIFIER = app.mono.io;
                                 PRODUCT_NAME = "$(TARGET_NAME)";
                                 STRING_CATALOG_GENERATE_SYMBOLS = YES;
+                                SWIFT_APPROACHABLE_CONCURRENCY = YES;
+                                SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
                                 SWIFT_EMIT_LOC_STRINGS = YES;
+                                SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
                                 SWIFT_VERSION = 5.0;
                                 TARGETED_DEVICE_FAMILY = "1,2";
                         };

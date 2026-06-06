@@ -19,6 +19,5 @@ struct AlbumRepository { func albums(from tracks: [Track]) -> [Album] { Dictiona
 struct ArtistRepository { func artists(from tracks: [Track]) -> [Artist] { Dictionary(grouping: tracks, by: \.artistName).map { Artist(id: $0.key, name: $0.key, imageURL: $0.value.first?.artworkURL, genre: $0.value.first?.genre ?? "Music", topTracks: $0.value) } } }
 struct PlaylistRepository { func make(title: String, tracks: [Track]) -> Playlist { Playlist(id: UUID().uuidString, title: title, subtitle: "THERE Music", artworkURL: tracks.first?.artworkURL, tracks: tracks, createdAt: Date()) } }
 struct UserRepository { let persistence: PersistenceController }
-@MainActor
 struct CommentRepository { let persistence: PersistenceController; func comments(trackID: Int) -> [Comment] { persistence.comments.filter { $0.trackID == trackID } } }
 struct RecommendationRepository { let trackRepository: TrackRepository }
