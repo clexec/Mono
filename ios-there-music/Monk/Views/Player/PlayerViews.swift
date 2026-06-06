@@ -12,7 +12,7 @@ struct MiniPlayerView: View {
                     Spacer()
                     Button { player.toggle() } label: { Image(systemName: player.audio.state == .playing ? "pause.fill" : "play.fill").font(.title3).foregroundStyle(.white) }
                     Button { player.next() } label: { Image(systemName: "forward.fill").font(.title3).foregroundStyle(.white) }
-                }.padding(10).background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous)).padding(.horizontal)
+                }.padding(10).modifier(LiquidGlassBackgroundModifier(cornerRadius: 16)).padding(.horizontal)
             }.buttonStyle(.plain).sheet(isPresented: $showFull) { FullPlayerView() }
         }
     }

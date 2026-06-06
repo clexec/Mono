@@ -19,7 +19,7 @@ struct AuthenticationView: View {
                     VStack(spacing: 12) {
                         Button { auth.signInWithApple() } label: { Label("Continue with Apple", systemImage: "apple.logo").thereButtonStyle() }
                         Button { Task { await auth.signInWithGoogle() } } label: { Label("Continue with Google", systemImage: "g.circle.fill").font(.headline).frame(maxWidth: .infinity, minHeight: 52).background(.white, in: Capsule()).foregroundStyle(.black) }
-                        Button { route = .email } label: { Label("Sign in with Email", systemImage: "envelope.fill").font(.headline).frame(maxWidth: .infinity, minHeight: 52).background(.ultraThinMaterial, in: Capsule()).foregroundStyle(.white) }
+                        Button { route = .email } label: { Label("Sign in with Email", systemImage: "envelope.fill").font(.headline).frame(maxWidth: .infinity, minHeight: 52).modifier(LiquidGlassBackgroundModifier(cornerRadius: 26)).foregroundStyle(.white) }
                     }.padding(.horizontal)
                     HStack(spacing: 4) { Text("Terms of Service"); Text("•"); Text("Privacy Policy") }.font(.caption).foregroundStyle(ColorPalette.textSecondary)
                 }.padding(.bottom, 28)

@@ -94,5 +94,11 @@ struct AudioVisualizerView: View {
 struct GlassEffectView<Content: View>: View {
     let content: Content
     init(@ViewBuilder content: () -> Content) { self.content = content() }
-    var body: some View { content.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous)) }
+    var body: some View {
+        if #available(iOS 26, *) {
+            content.glassEffect()
+        } else {
+            content.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        }
+    }
 }

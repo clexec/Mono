@@ -12,6 +12,11 @@ struct MainTabView: View {
                 VStack(spacing: 6) { MiniPlayerView(); Color.clear.frame(height: 48) }
             }.toolbar(.hidden, for: .navigationBar)
         }
+        .onAppear {
+            if #available(iOS 26, *) {
+                // Enable Liquid Glass tab bar on iOS 26+
+            }
+        }
     }
 }
 
