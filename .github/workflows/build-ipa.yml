@@ -45,6 +45,8 @@ jobs:
             ENABLE_BITCODE=NO \
             DEVELOPMENT_TEAM="" \
             ONLY_ACTIVE_ARCH=NO \
+            IPHONEOS_DEPLOYMENT_TARGET=26.0 \
+            SWIFT_VERSION=5.0 \
             2>&1 | tee ../build/xcodebuild-archive.log || true
           # Check if archive was created
           ls -la ../build/Monk.xcarchive/Products/Applications/ 2>/dev/null || { echo "ERROR: Archive not found"; exit 1; }

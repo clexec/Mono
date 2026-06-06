@@ -4,7 +4,11 @@ extension View {
     func thereCard() -> some View {
         self
             .padding(14)
+            #if compiler(>=6.2)
             .modifier(LiquidGlassCardModifier())
+            #else
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous))
+            #endif
             .overlay(
                 RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous)
                     .stroke(Color.white.opacity(0.08), lineWidth: 1)

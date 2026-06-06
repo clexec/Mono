@@ -40,7 +40,11 @@ struct LibraryView: View {
                             .padding(.horizontal, 16)
                             .padding(.vertical, 9)
                             .foregroundStyle(selectedFilter == filter ? ColorPalette.accent : .white)
-                            .modifier(LiquidGlassBackgroundModifier(cornerRadius: 18))
+                            #if compiler(>=6.2)
+                            .glassEffect(in: .rect(cornerRadius: 18))
+                            #else
+                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            #endif
                     }
                 }
             }
