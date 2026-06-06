@@ -1,92 +1,99 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var selectedTab: Tab = .home
     @State private var showSearch = false
 
-    enum Tab: Int, CaseIterable {
-        case home, favorites, create, profile
-    }
-
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .bottom) {
-                // Main content
-                Group {
-                    switch selectedTab {
-                    case .home: HomeView()
-                    case .favorites: LibraryView()
-                    case .create: CreatePlaylistView()
-                    case .profile: ProfileView()
-                    }
-                }
-                .padding(.bottom, 90)
+        ZStack(alignment: .bottomTrailing) {
+            // Native TabView with Tab API — gets AUTOMATIC Liquid Glass on iOS 26
+            #if compiler(>=6.2)
+            nativeTabView
+            #else
+            fallbackTabView
+            #endif
 
-                // Mini player + Custom tab bar
-                VStack(spacing: 6) {
-                    MiniPlayerView()
-
-                    // Compact tab bar with search button on the right
-                    HStack(spacing: 8) {
-                        // Tab bar — compressed to fit 4 items + search
-                        HStack(spacing: 0) {
-                            tabItem(tab: .home, icon: "house.fill", label: "Главная")
-                            tabItem(tab: .favorites, icon: "heart.fill", label: "Избранное")
-                            tabItem(tab: .create, icon: "plus", label: "Создать")
-                            tabItem(tab: .profile, icon: "person.fill", label: "Профиль")
-                        }
-                        .padding(.horizontal, 6)
-                        .padding(.vertical, 8)
-                        #if compiler(>=6.2)
-                        .glassEffect(in: .rect(cornerRadius: 22))
-                        #else
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-                        #endif
-
-                        // Separate search button
-                        Button {
-                            showSearch = true
-                        } label: {
-                            Image(systemName: "magnifyingglass")
-                                .font(.system(size: 16, weight: .semibold))
-                                .foregroundStyle(.white)
-                                .frame(width: 44, height: 44)
-                        }
-                        #if compiler(>=6.2)
-                        .glassEffect(in: .rect(cornerRadius: 22))
-                        #else
-                        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-                        #endif
-                    }
-                    .padding(.horizontal, 12)
-                }
-                .padding(.bottom, 4)
-            }
-            .toolbar(.hidden, for: .navigationBar)
+            // Floating search button — sits on the right side above the tab bar
+            searchButton
         }
         .sheet(isPresented: $showSearch) {
             SearchView()
         }
     }
 
-    // MARK: - Tab Item (compact)
+    // MARK: - Native iOS 26 TabView (automatic Liquid Glass)
 
-    private func tabItem(tab: Tab, icon: String, label: String) -> some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                selectedTab = tab
+    #if compiler(>=6.2)
+    @ViewBuilder
+    private var nativeTabView: some View {
+        TabView {
+            Tab("Главная", systemImage: "house.fill") {
+                NavigationStack {
+                    HomeView()
+                }
             }
-        } label: {
-            VStack(spacing: 3) {
-                Image(systemName: icon)
-                    .font(.system(size: 16))
-                Text(label)
-                    .font(.system(size: 9, weight: .medium))
+
+            Tab("Избранное", systemImage: "heart.fill") {
+                NavigationStack {
+                    LibraryView()
+                }
             }
-            .foregroundStyle(selectedTab == tab ? ColorPalette.accent : .white.opacity(0.6))
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 2)
+
+            Tab("Создать", systemImage: "plus") {
+                NavigationStack {
+                    CreatePlaylistView()
+                }
+            }
+
+            Tab("Профиль", systemImage: "person.fill") {
+                NavigationStack {
+                    ProfileView()
+                }
+            }
         }
+    }
+    #endif
+
+    // MARK: - Fallback TabView for Xcode 16 builds
+
+    private var fallbackTabView: some View {
+        TabView {
+            NavigationStack {
+                HomeView()
+                    .tabItem { Label("Главная", systemImage: "house.fill") }
+            }
+            NavigationStack {
+                LibraryView()
+                    .tabItem { Label("Избранное", systemImage: "heart.fill") }
+            }
+            NavigationStack {
+                CreatePlaylistView()
+                    .tabItem { Label("Создать", systemImage: "plus") }
+            }
+            NavigationStack {
+                ProfileView()
+                    .tabItem { Label("Профиль", systemImage: "person.fill") }
+            }
+        }
+    }
+
+    // MARK: - Floating Search Button (Liquid Glass)
+
+    private var searchButton: some View {
+        Button {
+            showSearch = true
+        } label: {
+            Image(systemName: "magnifyingglass")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 46, height: 46)
+        }
+        #if compiler(>=6.2)
+        .glassEffect(in: .rect(cornerRadius: 23))
+        #else
+        .background(.ultraThinMaterial, in: Circle())
+        #endif
+        .padding(.trailing, 16)
+        .padding(.bottom, 52)
     }
 }
 
