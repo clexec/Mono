@@ -4,7 +4,11 @@ extension View {
     func thereCard() -> some View {
         self
             .padding(14)
+            #if compiler(>=6.2)
             .glassEffect(in: .rect(cornerRadius: UIConstants.cardRadius))
+            #else
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous))
+            #endif
             .overlay(
                 RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous)
                     .stroke(Color.white.opacity(0.08), lineWidth: 1)
@@ -20,8 +24,14 @@ extension View {
     }
 
     /// Applies Liquid Glass effect with the specified corner radius
+    /// On Xcode 26+ (compiler >= 6.2) uses real .glassEffect()
+    /// On older compilers falls back to .ultraThinMaterial
     func liquidGlassBackground(cornerRadius: CGFloat) -> some View {
+        #if compiler(>=6.2)
         self.glassEffect(in: .rect(cornerRadius: cornerRadius))
+        #else
+        self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        #endif
     }
 }
 
@@ -34,7 +44,11 @@ extension Date {
 // Liquid Glass card modifier
 struct LiquidGlassCardModifier: ViewModifier {
     func body(content: Content) -> some View {
+        #if compiler(>=6.2)
         content.glassEffect(in: .rect(cornerRadius: UIConstants.cardRadius))
+        #else
+        content.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous))
+        #endif
     }
 }
 
@@ -42,6 +56,10 @@ struct LiquidGlassCardModifier: ViewModifier {
 struct LiquidGlassBackgroundModifier: ViewModifier {
     let cornerRadius: CGFloat
     func body(content: Content) -> some View {
+        #if compiler(>=6.2)
         content.glassEffect(in: .rect(cornerRadius: cornerRadius))
+        #else
+        content.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        #endif
     }
 }

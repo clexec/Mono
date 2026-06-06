@@ -15,10 +15,10 @@ jobs:
       - name: List available Xcode versions
         run: ls /Applications/ | grep Xcode || true
 
-      - name: Select Xcode 26
+      - name: Select Xcode
         run: |
-          # Try Xcode 26 variants first, then fall back to latest available
-          for xcode in Xcode_26.0 Xcode_26 Xcode_16.4 Xcode_16.3 Xcode_16.2; do
+          # Try Xcode 26 variants first (for Liquid Glass / .glassEffect support), then fall back
+          for xcode in Xcode_26.0 Xcode_26 Xcode_16.4 Xcode_16.3 Xcode_16.2 Xcode_16.1 Xcode_16; do
             if [ -d "/Applications/${xcode}.app" ]; then
               sudo xcode-select -s "/Applications/${xcode}.app/Contents/Developer"
               echo "Selected ${xcode}"
@@ -26,6 +26,7 @@ jobs:
             fi
           done
           xcodebuild -version
+          swift -version
           xcode-select -p
 
       - name: Build Archive

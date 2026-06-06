@@ -95,6 +95,10 @@ struct GlassEffectView<Content: View>: View {
     let content: Content
     init(@ViewBuilder content: () -> Content) { self.content = content() }
     var body: some View {
+        #if compiler(>=6.2)
         content.glassEffect()
+        #else
+        content.background(.ultraThinMaterial)
+        #endif
     }
 }

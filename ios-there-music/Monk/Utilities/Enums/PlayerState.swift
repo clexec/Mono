@@ -1,6 +1,6 @@
 import Foundation
 
-nonisolated enum PlaybackState: String, Codable {
+enum PlaybackState: String, Codable {
     case idle
     case loading
     case playing
@@ -8,7 +8,7 @@ nonisolated enum PlaybackState: String, Codable {
     case failed
 }
 
-nonisolated struct PlayerSnapshot: Codable, Hashable {
+struct PlayerSnapshot: Codable, Hashable {
     var state: PlaybackState
     var currentTrack: Track?
     var queue: [Track]

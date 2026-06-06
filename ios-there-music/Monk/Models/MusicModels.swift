@@ -1,6 +1,6 @@
 import Foundation
 
-nonisolated struct Album: Identifiable, Codable, Hashable {
+struct Album: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let artistName: String
@@ -9,7 +9,7 @@ nonisolated struct Album: Identifiable, Codable, Hashable {
     let tracks: [Track]
 }
 
-nonisolated struct Artist: Identifiable, Codable, Hashable {
+struct Artist: Identifiable, Codable, Hashable {
     let id: String
     let name: String
     let imageURL: URL?
@@ -17,7 +17,7 @@ nonisolated struct Artist: Identifiable, Codable, Hashable {
     let topTracks: [Track]
 }
 
-nonisolated struct Playlist: Identifiable, Codable, Hashable {
+struct Playlist: Identifiable, Codable, Hashable {
     let id: String
     var title: String
     var subtitle: String
@@ -26,7 +26,7 @@ nonisolated struct Playlist: Identifiable, Codable, Hashable {
     var createdAt: Date
 }
 
-nonisolated struct Comment: Identifiable, Codable, Hashable {
+struct Comment: Identifiable, Codable, Hashable {
     let id: String
     let trackID: Int
     let userID: String
@@ -35,27 +35,27 @@ nonisolated struct Comment: Identifiable, Codable, Hashable {
     let createdAt: Date
 }
 
-nonisolated struct Genre: Identifiable, Codable, Hashable {
+struct Genre: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let symbolName: String
     let query: String
 }
 
-nonisolated struct Recommendation: Identifiable, Codable, Hashable {
+struct Recommendation: Identifiable, Codable, Hashable {
     let id: String
     let title: String
     let reason: String
     let tracks: [Track]
 }
 
-nonisolated enum RepeatMode: String, Codable, CaseIterable {
+enum RepeatMode: String, Codable, CaseIterable {
     case off
     case one
     case all
 }
 
-nonisolated enum LibraryFilter: String, CaseIterable, Identifiable {
+enum LibraryFilter: String, CaseIterable, Identifiable {
     case playlists = "Playlists"
     case albums = "Albums"
     case artists = "Artists"
@@ -63,7 +63,7 @@ nonisolated enum LibraryFilter: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
-nonisolated enum SortOption: String, CaseIterable, Identifiable {
+enum SortOption: String, CaseIterable, Identifiable {
     case recentlyAdded = "Recently Added"
     case title = "Title"
     case artist = "Artist"
