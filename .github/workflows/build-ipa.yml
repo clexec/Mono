@@ -18,14 +18,9 @@ jobs:
           xcodebuild -version
           xcode-select -p
 
-      - name: List available Xcode versions
-        run: ls /Applications/ | grep Xcode || true
-
-      - name: Show SDKs
-        run: xcodebuild -showsdks || true
-
       - name: Build Archive
         run: |
+          mkdir -p build
           cd ios-there-music
           xcodebuild archive \
             -project Monk.xcodeproj \
@@ -40,7 +35,9 @@ jobs:
             DEVELOPMENT_TEAM="" \
             IPHONEOS_DEPLOYMENT_TARGET=17.0 \
             ONLY_ACTIVE_ARCH=NO \
-            | tee ../build/xcodebuild-archive.log
+            2>&1 | tee ../build/xcodebuild-archive.log || true
+          # Check if archive was created
+          ls -la ../build/Monk.xcarchive/Products/Applications/ 2>/dev/null || { echo "ERROR: Archive not found"; exit 1; }
 
       - name: Create IPA from Archive
         run: |
