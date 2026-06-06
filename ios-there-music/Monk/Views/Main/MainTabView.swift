@@ -2,17 +2,27 @@ import SwiftUI
 
 struct MainTabView: View {
     @State private var showSearch = false
+    @EnvironmentObject private var player: PlayerManager
 
     var body: some View {
-        ZStack(alignment: .bottomTrailing) {
-            // Native TabView with Tab API — gets AUTOMATIC Liquid Glass on iOS 26
+        ZStack(alignment: .bottom) {
+            // Native TabView — automatic Liquid Glass on iOS 26
             #if compiler(>=6.2)
             nativeTabView
             #else
             fallbackTabView
             #endif
 
-            // Floating search button — sits on the right side above the tab bar
+            // Mini player above tab bar
+            if player.currentTrack != nil {
+                VStack(spacing: 0) {
+                    MiniPlayerView()
+                    Spacer().frame(height: 50) // tab bar height
+                }
+                .padding(.bottom, 32)
+            }
+
+            // Floating search button on the right, above tab bar
             searchButton
         }
         .sheet(isPresented: $showSearch) {
@@ -20,63 +30,41 @@ struct MainTabView: View {
         }
     }
 
-    // MARK: - Native iOS 26 TabView (automatic Liquid Glass)
+    // MARK: - Native iOS 26 TabView (3 tabs — no Создать)
 
     #if compiler(>=6.2)
     @ViewBuilder
     private var nativeTabView: some View {
         TabView {
             Tab("Главная", systemImage: "house.fill") {
-                NavigationStack {
-                    HomeView()
-                }
+                NavigationStack { HomeView() }
             }
 
             Tab("Избранное", systemImage: "heart.fill") {
-                NavigationStack {
-                    LibraryView()
-                }
-            }
-
-            Tab("Создать", systemImage: "plus") {
-                NavigationStack {
-                    CreatePlaylistView()
-                }
+                NavigationStack { LibraryView() }
             }
 
             Tab("Профиль", systemImage: "person.fill") {
-                NavigationStack {
-                    ProfileView()
-                }
+                NavigationStack { ProfileView() }
             }
         }
     }
     #endif
 
-    // MARK: - Fallback TabView for Xcode 16 builds
+    // MARK: - Fallback TabView (Xcode 16)
 
     private var fallbackTabView: some View {
         TabView {
-            NavigationStack {
-                HomeView()
-                    .tabItem { Label("Главная", systemImage: "house.fill") }
-            }
-            NavigationStack {
-                LibraryView()
-                    .tabItem { Label("Избранное", systemImage: "heart.fill") }
-            }
-            NavigationStack {
-                CreatePlaylistView()
-                    .tabItem { Label("Создать", systemImage: "plus") }
-            }
-            NavigationStack {
-                ProfileView()
-                    .tabItem { Label("Профиль", systemImage: "person.fill") }
-            }
+            NavigationStack { HomeView() }
+                .tabItem { Label("Главная", systemImage: "house.fill") }
+            NavigationStack { LibraryView() }
+                .tabItem { Label("Избранное", systemImage: "heart.fill") }
+            NavigationStack { ProfileView() }
+                .tabItem { Label("Профиль", systemImage: "person.fill") }
         }
     }
 
-    // MARK: - Floating Search Button (Liquid Glass)
+    // MARK: - Floating Search Button (separate from tab bar)
 
     private var searchButton: some View {
         Button {

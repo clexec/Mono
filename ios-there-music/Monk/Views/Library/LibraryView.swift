@@ -65,8 +65,8 @@ struct LibraryView: View {
     private var playlistsContent: some View {
         VStack(alignment: .leading, spacing: 14) {
             AlbumCardView(
-                title: "THERE Favorites",
-                subtitle: "Auto playlist",
+                title: "Mono Favorites",
+                subtitle: "Автоплейлист",
                 artworkURL: library.likedTracks.first?.artworkURL
             )
 

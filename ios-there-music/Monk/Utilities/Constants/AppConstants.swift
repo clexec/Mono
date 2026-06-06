@@ -1,8 +1,8 @@
 import SwiftUI
 
 enum AppConstants {
-    static let appName = "THERE Music"
-    static let appDescription = "Music that feels close. Discover, play, save, and share the tracks that move with you."
+    static let appName = "Mono"
+    static let appDescription = "Вся ваша музыка в одном месте"
     static let googleClientID = ""
 }
 

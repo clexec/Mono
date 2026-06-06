@@ -11,6 +11,7 @@ final class AudioPlayerService: ObservableObject {
 
     private var player: AVPlayer?
     private var timeObserver: Any?
+    private var statusObserver: Any?
 
     func play(track: Track) {
         guard let url = track.previewURL else { return }
@@ -35,19 +36,41 @@ final class AudioPlayerService: ObservableObject {
     }
 
     func seek(to value: Double) {
-        player?.seek(to: CMTime(seconds: value, preferredTimescale: 600))
-        currentTime = value
+        let clamped = max(0, min(value, duration))
+        player?.seek(to: CMTime(seconds: clamped, preferredTimescale: 600))
+        currentTime = clamped
     }
 
     private func addObserver() {
-        timeObserver = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.5, preferredTimescale: 600), queue: .main) { [weak self] time in
-            Task { @MainActor in self?.currentTime = time.seconds.isFinite ? time.seconds : 0 }
+        // Update time every 0.1s for smooth progress bar
+        timeObserver = player?.addPeriodicTimeObserver(
+            forInterval: CMTime(seconds: 0.1, preferredTimescale: 600),
+            queue: .main
+        ) { [weak self] time in
+            Task { @MainActor in
+                let seconds = time.seconds
+                self?.currentTime = seconds.isFinite ? seconds : 0
+            }
+        }
+
+        // Observe item status for real duration
+        if let item = player?.currentItem {
+            statusObserver = item.observe(\.duration, options: .new) { [weak self] item, _ in
+                Task { @MainActor in
+                    let dur = item.duration.seconds
+                    if dur.isFinite && dur > 0 {
+                        self?.duration = dur
+                    }
+                }
+            }
         }
     }
 
     private func removeObserver() {
         if let timeObserver, let player { player.removeTimeObserver(timeObserver) }
         timeObserver = nil
+        statusObserver?.invalidate()
+        statusObserver = nil
     }
 }
 

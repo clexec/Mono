@@ -48,7 +48,7 @@ struct TrackRowView: View {
             Button("Add to Liked Songs", systemImage: "heart") {}
             Button("Go to Artist", systemImage: "person") {}
             Button("Go to Album", systemImage: "square.stack") {}
-            ShareLink(item: "Listen to \(track.title) by \(track.artistName) on THERE Music") { Label("Share", systemImage: "square.and.arrow.up") }
+            ShareLink(item: "Слушай \(track.title) от \(track.artistName) в Mono") { Label("Поделиться", systemImage: "square.and.arrow.up") }
             Button("View Song Details", systemImage: "info.circle") {}
         }
     }
