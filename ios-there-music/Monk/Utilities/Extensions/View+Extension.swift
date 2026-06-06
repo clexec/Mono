@@ -18,6 +18,20 @@ extension View {
             .background(ColorPalette.accent, in: Capsule())
             .foregroundStyle(.black)
     }
+
+    /// Applies Liquid Glass on iOS 26+, falls back to .ultraThinMaterial on older iOS
+    @ViewBuilder
+    func liquidGlassBackground(cornerRadius: CGFloat) -> some View {
+        #if compiler(>=6.2)
+        if #available(iOS 26, *) {
+            self.glassEffect(in: .rect(cornerRadius: cornerRadius))
+        } else {
+            self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        }
+        #else
+        self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+        #endif
+    }
 }
 
 extension Date {
@@ -26,14 +40,10 @@ extension Date {
     }
 }
 
-// Liquid Glass card modifier with fallback for older iOS
+// Liquid Glass card modifier with fallback for older iOS / older Xcode
 struct LiquidGlassCardModifier: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 26, *) {
-            content.glassEffect(in: .rect(cornerRadius: UIConstants.cardRadius))
-        } else {
-            content.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous))
-        }
+        content.liquidGlassBackground(cornerRadius: UIConstants.cardRadius)
     }
 }
 
@@ -41,10 +51,6 @@ struct LiquidGlassCardModifier: ViewModifier {
 struct LiquidGlassBackgroundModifier: ViewModifier {
     let cornerRadius: CGFloat
     func body(content: Content) -> some View {
-        if #available(iOS 26, *) {
-            content.glassEffect(in: .rect(cornerRadius: cornerRadius))
-        } else {
-            content.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        }
+        content.liquidGlassBackground(cornerRadius: cornerRadius)
     }
 }
