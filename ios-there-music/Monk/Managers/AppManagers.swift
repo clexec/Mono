@@ -11,7 +11,10 @@ final class AuthenticationManager: ObservableObject {
 
     init(persistence: PersistenceController) {
         self.persistence = persistence
-        if let data = UserDefaults.standard.data(forKey: "currentUser"), let user = try? JSONDecoder().decode(User.self, from: data) { currentUser = user }
+        if let data = UserDefaults.standard.data(forKey: "currentUser"),
+           let user = try? JSONDecoder().decode(User.self, from: data) {
+            currentUser = user
+        }
     }
 
     func signIn(email: String, password: String) async {
@@ -26,7 +29,10 @@ final class AuthenticationManager: ObservableObject {
     func signInWithGoogle() async { do { setUser(try await googleService.signIn()) } catch { errorMessage = error.localizedDescription } }
     func signOut() { currentUser = nil; UserDefaults.standard.removeObject(forKey: "currentUser") }
 
-    private func setUser(_ user: User) { currentUser = user; UserDefaults.standard.set(try? JSONEncoder().encode(user), forKey: "currentUser") }
+    private func setUser(_ user: User) {
+        currentUser = user
+        UserDefaults.standard.set(try? JSONEncoder().encode(user), forKey: "currentUser")
+    }
 }
 
 @MainActor
@@ -37,11 +43,34 @@ final class PlayerManager: ObservableObject {
     @Published var isShuffleEnabled = false
     let audio = AudioPlayerService()
     private let persistence: PersistenceController
+    // Forward audio state changes so every view observing PlayerManager re-renders on time tick
+    private var audioCancellable: AnyCancellable?
 
-    init(persistence: PersistenceController) { self.persistence = persistence; AudioSessionManager().configure() }
-    func play(_ track: Track, queue: [Track] = []) { currentTrack = track; self.queue = queue; audio.play(track: track); persistence.addRecentlyPlayed(track) }
+    init(persistence: PersistenceController) {
+        self.persistence = persistence
+        AudioSessionManager().configure()
+        audioCancellable = audio.objectWillChange
+            .receive(on: RunLoop.main)
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+    }
+
+    func play(_ track: Track, queue: [Track] = []) {
+        currentTrack = track
+        self.queue = queue
+        audio.play(track: track)
+        persistence.addRecentlyPlayed(track)
+    }
+
     func toggle() { audio.toggle() }
-    func next() { guard let next = queue.first else { return }; queue.removeFirst(); play(next, queue: queue) }
+
+    func next() {
+        guard !queue.isEmpty else { return }
+        let next = queue.removeFirst()
+        play(next, queue: queue)
+    }
+
     func previous() { audio.seek(to: 0) }
     func toggleShuffle() { isShuffleEnabled.toggle() }
     func cycleRepeat() { repeatMode = repeatMode == .off ? .all : repeatMode == .all ? .one : .off }

@@ -4,147 +4,202 @@ struct AuthenticationView: View {
     @EnvironmentObject private var auth: AuthenticationManager
     @State private var route: AuthRoute?
     @State private var backgroundTracks: [Track] = []
+    @State private var bgOffsetY: CGFloat = 0
+    @State private var bgOffsetX: CGFloat = 0
 
     var body: some View {
         NavigationStack {
             ZStack {
-                // Moving album covers background
-                albumGridBackground
+                // Animated moving album covers background
+                animatedAlbumGrid
 
-                // Dark overlay
+                // Dark gradient overlay
                 LinearGradient(
-                    colors: [.black.opacity(0.7), .black.opacity(0.5), .black.opacity(0.8)],
+                    stops: [
+                        .init(color: .black.opacity(0.55), location: 0),
+                        .init(color: .black.opacity(0.25), location: 0.4),
+                        .init(color: .black.opacity(0.85), location: 1)
+                    ],
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
 
                 // Content
-                VStack(spacing: 24) {
+                VStack(spacing: 0) {
                     Spacer()
 
-                    // Logo
-                    VStack(spacing: 12) {
+                    // Logo block
+                    VStack(spacing: 16) {
                         ZStack {
-                            RoundedRectangle(cornerRadius: 22)
-                                .fill(ColorPalette.accent.opacity(0.15))
-                                .frame(width: 80, height: 80)
+                            Circle()
+                                .fill(ColorPalette.accent.opacity(0.18))
+                                .frame(width: 90, height: 90)
+                                .blur(radius: 12)
+                            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [ColorPalette.accent, ColorPalette.secondary],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(width: 78, height: 78)
                             Image(systemName: "waveform.circle.fill")
-                                .font(.system(size: 56))
-                                .foregroundStyle(ColorPalette.accent)
+                                .font(.system(size: 48))
+                                .foregroundStyle(.white)
                         }
+
                         Text(AppConstants.appName)
-                            .font(.system(size: 38, weight: .black, design: .rounded))
+                            .font(.system(size: 42, weight: .black, design: .rounded))
                             .foregroundStyle(.white)
+
                         Text(AppConstants.appDescription)
                             .font(.subheadline)
                             .multilineTextAlignment(.center)
-                            .foregroundStyle(ColorPalette.textSecondary)
-                            .padding(.horizontal, 28)
+                            .foregroundStyle(.white.opacity(0.65))
+                            .padding(.horizontal, 36)
                     }
 
                     Spacer()
 
                     // Auth buttons
-                    VStack(spacing: 12) {
+                    VStack(spacing: 14) {
                         Button {
                             auth.signInWithApple()
                         } label: {
-                            Label("Войти через Apple", systemImage: "apple.logo")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity, minHeight: 52)
-                                .background(.white, in: Capsule())
-                                .foregroundStyle(.black)
+                            HStack(spacing: 10) {
+                                Image(systemName: "apple.logo")
+                                    .font(.system(size: 18, weight: .semibold))
+                                Text("Войти через Apple")
+                                    .font(.headline)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 54)
+                            .background(.white, in: Capsule())
+                            .foregroundStyle(.black)
                         }
 
                         Button {
                             route = .email
                         } label: {
-                            Label("Регистрация по почте", systemImage: "envelope.fill")
-                                .font(.headline)
-                                .frame(maxWidth: .infinity, minHeight: 52)
-                                #if compiler(>=6.2)
-                                .glassEffect(in: .rect(cornerRadius: 26))
-                                #else
-                                .background(.ultraThinMaterial, in: Capsule())
-                                #endif
-                                .foregroundStyle(.white)
+                            HStack(spacing: 10) {
+                                Image(systemName: "envelope.fill")
+                                    .font(.system(size: 16, weight: .semibold))
+                                Text("Войти по email")
+                                    .font(.headline)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 54)
+                            #if compiler(>=6.2)
+                            .glassEffect(in: .capsule)
+                            #else
+                            .background(.ultraThinMaterial, in: Capsule())
+                            #endif
+                            .foregroundStyle(.white)
                         }
+
+                        Button {
+                            route = .register
+                        } label: {
+                            Text("Нет аккаунта? **Зарегистрироваться**")
+                                .font(.subheadline)
+                                .foregroundStyle(.white.opacity(0.8))
+                        }
+                        .padding(.top, 4)
                     }
                     .padding(.horizontal, 24)
 
                     HStack(spacing: 4) {
                         Text("Условия использования")
                         Text("•")
-                        Text("Политика конфиденциальности")
+                        Text("Конфиденциальность")
                     }
-                    .font(.caption)
-                    .foregroundStyle(ColorPalette.textSecondary)
+                    .font(.caption2)
+                    .foregroundStyle(.white.opacity(0.35))
+                    .padding(.top, 16)
+                    .padding(.bottom, 36)
                 }
-                .padding(.bottom, 28)
             }
             .alert("Ошибка", isPresented: .constant(auth.errorMessage != nil)) {
                 Button("OK") { auth.errorMessage = nil }
             } message: {
                 Text(auth.errorMessage ?? "")
             }
-            .navigationDestination(item: $route) { _ in LoginView() }
-        }
-        .task {
-            await loadBackgroundCovers()
-        }
-    }
-
-    // MARK: - Moving Album Grid Background
-
-    private var albumGridBackground: some View {
-        GeometryReader { geo in
-            let cols = Int(geo.size.width / 100) + 2
-            let rows = Int(geo.size.height / 100) + 2
-
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 2) {
-                    ForEach(0..<max(cols, 4), id: \.self) { col in
-                        VStack(spacing: 2) {
-                            ForEach(0..<max(rows, 8), id: \.self) { row in
-                                let index = (col * 10 + row) % max(backgroundTracks.count, 1)
-                                if index < backgroundTracks.count {
-                                    let track = backgroundTracks[index]
-                                    AsyncImage(url: track.artworkURL) { phase in
-                                        switch phase {
-                                        case .success(let image):
-                                            image.resizable().aspectRatio(contentMode: .fill)
-                                        default:
-                                            Rectangle().fill(ColorPalette.elevated)
-                                        }
-                                    }
-                                    .frame(width: 100, height: 100)
-                                    .clipped()
-                                } else {
-                                    Rectangle()
-                                        .fill(ColorPalette.elevated)
-                                        .frame(width: 100, height: 100)
-                                }
-                            }
-                        }
-                    }
+            .navigationDestination(item: $route) { route in
+                switch route {
+                case .email: LoginView(startAsRegister: false)
+                case .register: LoginView(startAsRegister: true)
                 }
             }
-            .disabled(true)
-            .opacity(0.6)
+        }
+        .task { await loadBackgroundCovers() }
+        .onAppear { startAnimation() }
+    }
+
+    // MARK: - Animated Album Grid
+
+    private var animatedAlbumGrid: some View {
+        GeometryReader { geo in
+            let cellSize: CGFloat = 96
+            let spacing: CGFloat = 3
+            let cols = Int(geo.size.width / (cellSize + spacing)) + 3
+            let rows = Int(geo.size.height / (cellSize + spacing)) + 4
+
+            HStack(spacing: spacing) {
+                ForEach(0..<max(cols, 5), id: \.self) { col in
+                    VStack(spacing: spacing) {
+                        ForEach(0..<max(rows, 9), id: \.self) { row in
+                            let index = (col * max(rows, 9) + row) % max(backgroundTracks.count, 1)
+                            Group {
+                                if index < backgroundTracks.count {
+                                    AsyncImage(url: backgroundTracks[index].artworkURL) { phase in
+                                        switch phase {
+                                        case .success(let img):
+                                            img.resizable().aspectRatio(contentMode: .fill)
+                                        default:
+                                            ColorPalette.elevated
+                                        }
+                                    }
+                                } else {
+                                    ColorPalette.elevated
+                                }
+                            }
+                            .frame(width: cellSize, height: cellSize)
+                            .clipped()
+                            .cornerRadius(8)
+                        }
+                    }
+                    // Alternate columns move in opposite directions for parallax feel
+                    .offset(y: col.isMultiple(of: 2) ? bgOffsetY : -bgOffsetY)
+                }
+            }
+            .offset(x: -cellSize / 2 + bgOffsetX, y: -cellSize)
         }
         .ignoresSafeArea()
+        .opacity(0.55)
+    }
+
+    // MARK: - Animation
+
+    private func startAnimation() {
+        withAnimation(.linear(duration: 22).repeatForever(autoreverses: true)) {
+            bgOffsetY = 180
+        }
+        withAnimation(.linear(duration: 35).repeatForever(autoreverses: true)) {
+            bgOffsetX = 24
+        }
     }
 
     private func loadBackgroundCovers() async {
         let api = ITunesAPIService()
         do {
-            let tracks = try await api.search(term: "top hits 2024", limit: 25)
+            let tracks = try await api.search(term: "top hits 2024", limit: 30)
             await MainActor.run { backgroundTracks = tracks }
-        } catch {
-            // Fallback: empty
-        }
+        } catch {}
     }
 }
 
-enum AuthRoute: Hashable, Identifiable { case email; var id: Int { 0 } }
+enum AuthRoute: Hashable, Identifiable {
+    case email
+    case register
+    var id: Int { hashValue }
+}

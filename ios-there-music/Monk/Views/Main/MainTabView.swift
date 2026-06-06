@@ -5,24 +5,19 @@ struct MainTabView: View {
     @EnvironmentObject private var player: PlayerManager
 
     var body: some View {
-        ZStack(alignment: .bottom) {
-            // Native TabView — automatic Liquid Glass on iOS 26
-            #if compiler(>=6.2)
-            nativeTabView
-            #else
-            fallbackTabView
-            #endif
-
-            // Mini player above tab bar
-            if player.currentTrack != nil {
-                VStack(spacing: 0) {
-                    MiniPlayerView()
-                    Spacer().frame(height: 50) // tab bar height
+        ZStack(alignment: .bottomTrailing) {
+            tabContent
+                .safeAreaInset(edge: .bottom, spacing: 0) {
+                    // Mini player sits just above the system tab bar
+                    if player.currentTrack != nil {
+                        MiniPlayerView()
+                            .padding(.horizontal, 10)
+                            .padding(.bottom, 6)
+                            .padding(.top, 4)
+                    }
                 }
-                .padding(.bottom, 32)
-            }
 
-            // Floating search button on the right, above tab bar
+            // Floating search icon — separate from tab bar, positioned bottom-right
             searchButton
         }
         .sheet(isPresented: $showSearch) {
@@ -30,7 +25,18 @@ struct MainTabView: View {
         }
     }
 
-    // MARK: - Native iOS 26 TabView (3 tabs — no Создать)
+    // MARK: - Tab content
+
+    @ViewBuilder
+    private var tabContent: some View {
+        #if compiler(>=6.2)
+        nativeTabView
+        #else
+        fallbackTabView
+        #endif
+    }
+
+    // MARK: - Native iOS 26 TabView (3 tabs — no Create)
 
     #if compiler(>=6.2)
     @ViewBuilder
@@ -39,11 +45,9 @@ struct MainTabView: View {
             Tab("Главная", systemImage: "house.fill") {
                 NavigationStack { HomeView() }
             }
-
             Tab("Избранное", systemImage: "heart.fill") {
                 NavigationStack { LibraryView() }
             }
-
             Tab("Профиль", systemImage: "person.fill") {
                 NavigationStack { ProfileView() }
             }
@@ -64,24 +68,26 @@ struct MainTabView: View {
         }
     }
 
-    // MARK: - Floating Search Button (separate from tab bar)
+    // MARK: - Floating Search Button (separate from tab bar, bottom-right)
 
     private var searchButton: some View {
         Button {
             showSearch = true
         } label: {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 17, weight: .semibold))
+                .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: 46, height: 46)
+                .frame(width: 50, height: 50)
         }
         #if compiler(>=6.2)
-        .glassEffect(in: .rect(cornerRadius: 23))
+        .glassEffect(in: .circle)
         #else
         .background(.ultraThinMaterial, in: Circle())
         #endif
+        .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
         .padding(.trailing, 16)
-        .padding(.bottom, 52)
+        // Float above tab bar + mini player if active
+        .padding(.bottom, player.currentTrack != nil ? 160 : 92)
     }
 }
 
