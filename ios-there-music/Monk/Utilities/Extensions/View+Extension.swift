@@ -4,15 +4,7 @@ extension View {
     func thereCard() -> some View {
         self
             .padding(14)
-            #if compiler(>=6.2)
-            if #available(iOS 26, *) {
-                self.glassEffect(in: .rect(cornerRadius: UIConstants.cardRadius))
-            } else {
-                self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous))
-            }
-            #else
-            self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous))
-            #endif
+            .modifier(LiquidGlassCardModifier())
             .overlay(
                 RoundedRectangle(cornerRadius: UIConstants.cardRadius, style: .continuous)
                     .stroke(Color.white.opacity(0.08), lineWidth: 1)
@@ -28,18 +20,8 @@ extension View {
     }
 
     /// Applies Liquid Glass effect with the specified corner radius
-    /// On Xcode 26+ / iOS 26: uses real .glassEffect()
-    /// On older compilers / iOS: falls back to .ultraThinMaterial
     func liquidGlassBackground(cornerRadius: CGFloat) -> some View {
-        #if compiler(>=6.2)
-        if #available(iOS 26, *) {
-            self.glassEffect(in: .rect(cornerRadius: cornerRadius))
-        } else {
-            self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        }
-        #else
-        self.background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
-        #endif
+        self.modifier(LiquidGlassBackgroundModifier(cornerRadius: cornerRadius))
     }
 }
 
@@ -49,8 +31,9 @@ extension Date {
     }
 }
 
-// Liquid Glass card modifier
+// Liquid Glass card modifier — uses @ViewBuilder body for if #available branching
 struct LiquidGlassCardModifier: ViewModifier {
+    @ViewBuilder
     func body(content: Content) -> some View {
         #if compiler(>=6.2)
         if #available(iOS 26, *) {
@@ -67,6 +50,7 @@ struct LiquidGlassCardModifier: ViewModifier {
 // Liquid Glass background modifier
 struct LiquidGlassBackgroundModifier: ViewModifier {
     let cornerRadius: CGFloat
+    @ViewBuilder
     func body(content: Content) -> some View {
         #if compiler(>=6.2)
         if #available(iOS 26, *) {
