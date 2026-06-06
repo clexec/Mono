@@ -96,7 +96,11 @@ struct GlassEffectView<Content: View>: View {
     init(@ViewBuilder content: () -> Content) { self.content = content() }
     var body: some View {
         #if compiler(>=6.2)
-        content.glassEffect()
+        if #available(iOS 26, *) {
+            content.glassEffect()
+        } else {
+            content.background(.ultraThinMaterial)
+        }
         #else
         content.background(.ultraThinMaterial)
         #endif
