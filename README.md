@@ -126,44 +126,6 @@ Press `Cmd + R` in Xcode
 
 ---
 
-## Project Structure
-
-```
-ios-there-music/
-├── Monk/
-│   ├── Authentication/     # Auth logic
-│   ├── Models/            # Data models
-│   ├── Services/          # API clients
-│   ├── ViewModels/        # Business logic
-│   ├── Views/             # SwiftUI views
-│   ├── Managers/          # App managers
-│   ├── Repositories/      # Data layer
-│   └── Utilities/         # Helpers
-├── MonkTests/             # Unit tests
-├── MonkUITests/           # UI tests
-└── screenshots/           # App screenshots
-```
-
----
-
-## Design
-
-Warm brown color palette (#D4A574, #6B4423) with dark theme by default. Uses SF Symbols for icons and native iOS blur effects.
-
----
-
-## Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/NewFeature`)
-3. Commit changes (`git commit -m 'Add NewFeature'`)
-4. Push to branch (`git push origin feature/NewFeature`)
-5. Open Pull Request
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for details.
-
----
-
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
