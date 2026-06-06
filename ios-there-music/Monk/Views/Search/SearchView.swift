@@ -137,13 +137,9 @@ struct GenreArtworkCard: View {
                             .frame(height: 100)
                             .clipped()
                     default:
-                        // Fallback gradient
-                        LinearGradient(
-                            colors: card.gradient,
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                        .frame(height: 100)
+                        // Fallback solid color
+                        ColorPalette.elevated
+                            .frame(height: 100)
                     }
                 }
 

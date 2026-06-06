@@ -11,7 +11,7 @@ final class AudioPlayerService: ObservableObject {
 
     private var player: AVPlayer?
     private var timeObserver: Any?
-    private var statusObserver: Any?
+    private var statusObserver: NSKeyValueObservation?
 
     func play(track: Track) {
         guard let url = track.previewURL else { return }
@@ -69,7 +69,6 @@ final class AudioPlayerService: ObservableObject {
     private func removeObserver() {
         if let timeObserver, let player { player.removeTimeObserver(timeObserver) }
         timeObserver = nil
-        statusObserver?.invalidate()
         statusObserver = nil
     }
 }

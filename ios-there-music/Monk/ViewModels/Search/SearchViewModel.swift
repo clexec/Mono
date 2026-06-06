@@ -1,5 +1,5 @@
 import Combine
-import Foundation
+import SwiftUI
 
 @MainActor
 final class SearchViewModel: ObservableObject {
@@ -61,18 +61,17 @@ struct GenreCardData: Identifiable {
     let title: String
     let iconName: String
     let searchQuery: String
-    let gradient: [Color]
     var artworkURL: URL?
 
     static let defaultCards: [GenreCardData] = [
-        GenreCardData(id: "pop", title: "Pop", iconName: "music.mic", searchQuery: "pop hits", gradient: [Color.pink.opacity(0.8), Color.purple.opacity(0.6)]),
-        GenreCardData(id: "rock", title: "Rock", iconName: "guitars", searchQuery: "rock", gradient: [Color.red.opacity(0.8), Color.orange.opacity(0.6)]),
-        GenreCardData(id: "hiphop", title: "Hip-Hop", iconName: "waveform", searchQuery: "hip hop", gradient: [Color.yellow.opacity(0.7), Color.red.opacity(0.6)]),
-        GenreCardData(id: "jazz", title: "Jazz", iconName: "saxophone", searchQuery: "jazz", gradient: [Color.blue.opacity(0.7), Color.indigo.opacity(0.5)]),
-        GenreCardData(id: "electronic", title: "Electronic", iconName: "slider.horizontal.3", searchQuery: "electronic", gradient: [Color.cyan.opacity(0.7), Color.purple.opacity(0.6)]),
-        GenreCardData(id: "soul", title: "Soul", iconName: "heart.fill", searchQuery: "soul", gradient: [Color.orange.opacity(0.7), Color.pink.opacity(0.5)]),
-        GenreCardData(id: "rnb", title: "R&B", iconName: "music.note.list", searchQuery: "r&b", gradient: [Color.purple.opacity(0.7), Color.blue.opacity(0.5)]),
-        GenreCardData(id: "classical", title: "Classical", iconName: "pianokeys", searchQuery: "classical", gradient: [Color.green.opacity(0.6), Color.teal.opacity(0.5)])
+        GenreCardData(id: "pop", title: "Pop", iconName: "music.mic", searchQuery: "pop hits", artworkURL: nil),
+        GenreCardData(id: "rock", title: "Rock", iconName: "guitars", searchQuery: "rock", artworkURL: nil),
+        GenreCardData(id: "hiphop", title: "Hip-Hop", iconName: "waveform", searchQuery: "hip hop", artworkURL: nil),
+        GenreCardData(id: "jazz", title: "Jazz", iconName: "saxophone", searchQuery: "jazz", artworkURL: nil),
+        GenreCardData(id: "electronic", title: "Electronic", iconName: "slider.horizontal.3", searchQuery: "electronic", artworkURL: nil),
+        GenreCardData(id: "soul", title: "Soul", iconName: "heart.fill", searchQuery: "soul", artworkURL: nil),
+        GenreCardData(id: "rnb", title: "R&B", iconName: "music.note.list", searchQuery: "r&b", artworkURL: nil),
+        GenreCardData(id: "classical", title: "Classical", iconName: "pianokeys", searchQuery: "classical", artworkURL: nil)
     ]
 }
 
